@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# pytest cache
+.pytest_cache/
+*.cover
+
+# mypy & pylint & black cache
+.mypy_cache/
+.pytype/
+.cache/
+.nox/
+
+# Local Python installs (pip --user)
+*.local/

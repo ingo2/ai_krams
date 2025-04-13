@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug micrograd",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/micrograd/main.py",
+      "console": "integratedTerminal",
+      "python": "/usr/bin/python3.13",
+      "justMyCode": true,
+    },
+    {
+      "name": "debug micrograd tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "micrograd/tests"
+      ],
+      "console": "integratedTerminal",
+      "python": "/usr/bin/python3.13",
+      "justMyCode": true,
+    }
+  ]
+}
