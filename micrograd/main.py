@@ -1,11 +1,14 @@
-import numpy as np
-from graphviz import Digraph
+import viz_tools
+from engine import Value
+from matplotlib import pyplot as plt
 
 
 def main():
-    print("Hallo aus VS Code + WSL!")
-    x = np.array([1, 2, 3])
-    print("Numpy-Array:", x)
+    a = Value(2.0)
+    b = Value(3.0)
+    c = a + b
+    graph = viz_tools.draw_dot(c)
+    graph.view()
 
 
 if __name__ == "__main__":
