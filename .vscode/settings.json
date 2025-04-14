@@ -5,4 +5,5 @@
     "markdown": false,
     "scminput": false
   },
+  "editor.rulers": [80,100]
 }
