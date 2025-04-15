@@ -66,7 +66,7 @@ def test_pow():
     assert b._prev == {a}
 
 
-def test_example1():
+def test_backward_example1():
     # x1 \
     #     * x1w1 \
     # w1 /        \
@@ -90,17 +90,9 @@ def test_example1():
     o = n.tanh()
     o.label = "o"
 
-    # Initialize gradient of "o": (o - (o + h)) / h = 1
-    o.grad = 1.0
-    # Semi-automatic backpropagation: Compute gradients of all nodes in the 
-    # graph starting from the output node "o" and going backwards to the input 
-    # nodes.
-    o._backward()
-    n._backward()
-    x1w1x2w2._backward()
-    x1w1._backward()
-    x2w2._backward()
+    o.backward()
 
+    # Uncommend to optionally draw the graph.
     # graph = viz_tools.draw_dot(o)
     # graph.view()
 
@@ -114,3 +106,9 @@ def test_example1():
     assert 0.5 == pytest.approx(b.grad, rel=1e-4)
 
     assert 0.5 == pytest.approx(n.grad, rel=1e-4)
+
+def test_backward_example2():
+    a = Value(1.0)
+    b = a + a
+    b.backward()
+    assert a.grad == 2.0

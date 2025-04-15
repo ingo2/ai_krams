@@ -14,10 +14,18 @@ class Value:
         # A label for the node, for graphviz / debugging / etc.
         self.label = label
         # A backward function that computes the gradient.
-        self._backward = None
+        self._backward = lambda: None
 
     def __repr__(self):
         return f"Value({self.label}: data={self.data}, grad={self.grad})"
+
+    def backward(self):
+        """Backpropagation through the graph."""
+        topo = topo_sort(self)
+        # Initialize gradient of "o": (o - (o + h)) / h = 1
+        self.grad = 1.0
+        for node in reversed(topo):
+            node._backward()
 
     def __add__(self, other):
         other = other if isinstance(other, Value) else Value(other)
@@ -84,3 +92,19 @@ class Value:
 
     def __rtruediv__(self, other):  # other / self
         return other * self**-1
+
+
+def topo_sort(root):
+    """Topological sort of the graph."""
+    visited = set()
+    order = []
+
+    def dfs(node):
+        if node not in visited:
+            visited.add(node)
+            for child in node._prev:
+                dfs(child)
+            order.append(node)
+
+    dfs(root)
+    return order
