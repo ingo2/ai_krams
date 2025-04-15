@@ -22,7 +22,7 @@ class Value:
     def backward(self):
         """Backpropagation through the graph."""
         topo = topo_sort(self)
-        # Initialize gradient of "o": (o - (o + h)) / h = 1
+        # Initialize gradient: h -> 0 => (F - (F + h)) / h = 1,
         self.grad = 1.0
         for node in reversed(topo):
             node._backward()
@@ -55,6 +55,15 @@ class Value:
 
         def backward():
             self.grad += other * out.grad ** (other - 1) * out.grad
+
+        out._backward = backward
+        return out
+
+    def exp(self):
+        out = Value(math.exp(self.data), (self,), "exp")
+
+        def backward():
+            self.grad += out.data * out.grad
 
         out._backward = backward
         return out

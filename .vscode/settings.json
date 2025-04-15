@@ -1,9 +1,12 @@
 {
   "github.copilot.enable": {
-    "*": true,
+    "*": false,
     "plaintext": false,
     "markdown": false,
     "scminput": false
   },
-  "editor.rulers": [80,100]
+  "editor.rulers": [
+    80,
+    100
+  ]
 }
