@@ -17,10 +17,10 @@ class Value:
         self._backward = lambda: None
 
     def __repr__(self):
-        return f"Value({self.label}: data={self.data}, grad={self.grad})"
+        label_part = f"{self.label}| " if self.label else ""
+        return f"({label_part}v={self.data}, g={self.grad})"
 
     def backward(self):
-        """Backpropagation through the graph."""
         topo = topo_sort(self)
         # Initialize gradient: h -> 0 => (F - (F + h)) / h = 1,
         self.grad = 1.0
@@ -31,54 +31,52 @@ class Value:
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data + other.data, (self, other), "+")
 
-        def backward():
+        def _backward():
             self.grad += out.grad
             other.grad += out.grad
 
-        out._backward = backward
+        out._backward = _backward
         return out
 
     def __mul__(self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data * other.data, (self, other), "*")
 
-        def backward():
+        def _backward():
             self.grad += other.data * out.grad
             other.grad += self.data * out.grad
 
-        out._backward = backward
+        out._backward = _backward
         return out
 
     def __pow__(self, other):
         assert isinstance(other, (int, float)), "only supporting int/float powers for now"
         out = Value(self.data**other, (self,), f"**{other}")
 
-        def backward():
-            self.grad += other * out.grad ** (other - 1) * out.grad
+        def _backward():
+            self.grad += (other * self.data ** (other - 1)) * out.grad
 
-        out._backward = backward
+        out._backward = _backward
         return out
 
     def exp(self):
         out = Value(math.exp(self.data), (self,), "exp")
 
-        def backward():
+        def _backward():
             self.grad += out.data * out.grad
 
-        out._backward = backward
+        out._backward = _backward
         return out
 
     def tanh(self):
-        """Tanh activation function."""
-        # Tanh function: f(x) = (2 / (1 + exp(-2x))) - 1
-        e2x = math.exp(2 * self.data)
-        t = (e2x - 1) / (e2x + 1)
+        x = self.data
+        t = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
         out = Value(t, (self,), "tanh")
 
-        def backward():
+        def _backward():
             self.grad += (1 - t**2) * out.grad
 
-        out._backward = backward
+        out._backward = _backward
         return out
 
     def __neg__(self):  # -self
