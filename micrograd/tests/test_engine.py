@@ -2,6 +2,10 @@ from engine import Value
 import pytest
 import viz_tools
 
+# Draw a graph:
+# graph = viz_tools.draw_dot(val)
+# graph.view()
+
 
 def test_value():
     a = Value(2.0)
@@ -9,12 +13,6 @@ def test_value():
     assert a.grad == 0
     assert a._prev == set()
     assert a._op == ""
-    assert repr(a) == "Value(: data=2.0, grad=0)"
-
-
-def test_value_repr():
-    a = Value(5.0)
-    assert repr(a) == "Value(: data=5.0, grad=0)"
 
 
 def test_add():
@@ -25,6 +23,11 @@ def test_add():
     assert c.data == 5.0
     assert c._prev == {a, b}
 
+    c.backward()
+    assert c.grad == 1.0
+    assert a.grad == 1.0
+    assert b.grad == 1.0
+
 
 def test_mul():
     a = Value(2.0)
@@ -34,27 +37,10 @@ def test_mul():
     assert c.data == 6.0
     assert c._prev == {a, b}
 
-
-def test_add_mul():
-    a = Value(2.0)
-    b = Value(3.0)
-    c = Value(-4.0)
-    d = a + b * c
-    assert d._op == "+"
-    assert d.data == 2.0 + 3.0 * -4.0
-    assert len(d._prev) == 2
-    assert {child.data for child in d._prev} == {2.0, -12.0}
-
-
-def test_mul_add():
-    a = Value(2.0)
-    b = Value(3.0)
-    c = Value(-5.0)
-    d = a * b + c
-    assert d._op == "+"
-    assert d.data == 2.0 * 3.0 + -5.0
-    assert len(d._prev) == 2
-    assert {child.data for child in d._prev} == {-5.0, 6.0}
+    c.backward()
+    assert c.grad == 1.0
+    assert a.grad == 3.0
+    assert b.grad == 2.0
 
 
 def test_pow():
@@ -65,6 +51,71 @@ def test_pow():
     assert len(b._prev) == 1
     assert b._prev == {a}
 
+    b.backward()
+    assert b.grad == 1.0
+    assert a.grad == 3 * 2 ** (3 - 1)  # 3 * 2^2 = 12.0
+
+
+def test_add_mul():
+    a = Value(2.0, label="a")
+    b = Value(3.0, label="b")
+    c = Value(-5.0, label="c")
+    d = a + b * c
+    d.label = "d"
+    assert d._op == "+"
+    assert d.data == 2.0 + 3.0 * -5.0
+    assert len(d._prev) == 2
+    assert {child.data for child in d._prev} == {2.0, -15.0}
+
+    d.backward()
+    # Uncommend draw the graph.
+    # graph = viz_tools.draw_dot(d)
+    # graph.view()
+    assert d.grad == 1.0
+    assert a.grad == 1.0
+    assert b.grad == -5.0
+    assert c.grad == 3.0
+
+
+def test_mul_add():
+    a = Value(2.0, label="a")
+    b = Value(3.0, label="b")
+    c = Value(-5.0, label="c")
+    d = a * b + c
+    d.label = "d"
+    assert d._op == "+"
+    assert d.data == 2.0 * 3.0 + -5.0
+    assert len(d._prev) == 2
+    assert {child.data for child in d._prev} == {-5.0, 6.0}
+
+    d.backward()
+    # Uncommend draw the graph.
+    # graph = viz_tools.draw_dot(d)
+    # graph.view()
+    assert d.grad == 1.0
+    assert c.grad == 1.0
+    assert a.grad == 3.0
+    assert b.grad == 2.0
+
+def test_mul_pow():
+    a = Value(3.0, label="a")
+    b = Value(-2.0, label="b")
+    c = a * b ** 3
+    c.label = "c"
+    assert c._op == "*"
+    assert c.data == 3.0 * (-2.0) ** 3
+    assert len(c._prev) == 2
+    assert {child.data for child in c._prev} == {-8.0, 3.0}
+    
+    c.backward()
+    # Uncommend draw the graph.
+    # graph = viz_tools.draw_dot(c)
+    # graph.view()
+    assert c.grad == 1.0
+    # dc/da = dc/dc * dc/da = 1.0 * (-2.0) ** 3 = -8.0
+    assert a.grad == -8.0
+    assert b.grad == 36.0 # 3 * (-2)**2 * 3 = 3 * 4 * 3 = 36.0
+   
 
 def test_backward_example1():
     # x1 \
@@ -92,7 +143,7 @@ def test_backward_example1():
 
     o.backward()
 
-    # Uncommend to optionally draw the graph.
+    # Uncommend draw the graph.
     # graph = viz_tools.draw_dot(o)
     # graph.view()
 
@@ -107,8 +158,11 @@ def test_backward_example1():
 
     assert 0.5 == pytest.approx(n.grad, rel=1e-4)
 
+
 def test_backward_example2():
-    a = Value(1.0)
+    a = Value(3.0)
+    # b = a + a = 2a => b' = db / da = 2
     b = a + a
     b.backward()
+    assert a.data == 3.0
     assert a.grad == 2.0
