@@ -142,11 +142,9 @@ def test_backward_example1():
     o.label = "o"
 
     o.backward()
-
     # Uncommend draw the graph.
     # graph = viz_tools.draw_dot(o)
     # graph.view()
-
     assert -1.5 == pytest.approx(x1.grad, rel=1e-4)
     assert 1.0 == pytest.approx(w1.grad, rel=1e-4)
     assert 0.5 == pytest.approx(x2.grad, rel=1e-4)

@@ -29,15 +29,15 @@ class Neuron(Module):
         return self.w + [self.b]
 
     def __repr__(self):
-        return f"{'tanh' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+        return f"{'Tanh' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
 
 
 class Layer(Module):
     """A layer of neurons."""
 
     def __init__(self, nin, nout, **kwargs):
-        # kwargs is a python thing to pass stuff in form of a dictionary into class which does
-        # things with it :O. Here the "nonLin" konfiguration is passed into the Neuron.
+        # kwargs is a python thing to pass stuff in from a dictionary into an object which does
+        # things with it :O. Here the "nonLin" configuration is passed into the Neuron.
         self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
 
     def __call__(self, x):
