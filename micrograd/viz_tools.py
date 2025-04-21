@@ -1,10 +1,12 @@
 from graphviz import Digraph
+from typing import Set, Tuple, Any
 
 
-def trace(root):
-    nodes, edges = set(), set()
+def trace(root: Any) -> Tuple[Set[Any], Set[Tuple[Any, Any]]]:
+    nodes: Set[Any] = set()
+    edges: Set[Tuple[Any, Any]] = set()
 
-    def build(v):
+    def build(v: Any) -> None:
         if v not in nodes:
             nodes.add(v)
             for child in v._prev:
@@ -15,7 +17,7 @@ def trace(root):
     return nodes, edges
 
 
-def draw_dot(root, format="svg", rankdir="LR"):
+def draw_dot(root: Any, format: str = "svg", rankdir: str = "LR") -> Digraph:
     """
     format: png | svg | ...
     rankdir: TB (top to bottom graph) | LR (left to right)
@@ -26,7 +28,9 @@ def draw_dot(root, format="svg", rankdir="LR"):
 
     for n in nodes:
         dot.node(
-            name=str(id(n)), label="{ %s | data %.4f | grad %.4f }" % (n.label, n.data, n.grad), shape="record"
+            name=str(id(n)),
+            label="{ %s | data %.4f | grad %.4f }" % (n.label, n.data, n.grad),
+            shape="record",
         )
         if n._op:
             dot.node(name=str(id(n)) + n._op, label=n._op)
