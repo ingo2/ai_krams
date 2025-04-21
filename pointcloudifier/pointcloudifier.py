@@ -234,7 +234,7 @@ class PointCloudifier:
     def plot(
         self,
         *,
-        cmap: str = "plasma",
+        cmap: str = "viridis",
         point_size: float = 1.0,
         title: Optional[str] = None,
         show: bool = True,
