@@ -6,3 +6,5 @@
   Might need to switch back to old version when running apt-get update
 * Install a pip module for specific python version:
   python3.13 -m pip install -U scikit-learn
+* Install pytorch
+  python3.13 -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
