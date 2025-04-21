@@ -1,3 +1,4 @@
-sudo apt-get install pytest matplotlib python3.13-tk
+sudo apt-get install python3.13-tk
 sudo update-alternatives --config python
 sudo update-alternatives --config python3
+python3.13 -m pip install -U scikit-learn

@@ -22,13 +22,13 @@ class Neuron(Module):
 
     def __call__(self, x: List[Value]) -> Value:
         act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
-        return act.tanh() if self.nonlin else act
+        return act.relu() if self.nonlin else act
 
     def parameters(self) -> List[Value]:
         return self.w + [self.b]
 
     def __repr__(self) -> str:
-        return f"{'Tanh' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+        return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
 
 
 class Layer(Module):
