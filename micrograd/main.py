@@ -43,7 +43,7 @@ def main() -> None:
     # plt.show()
 
     # Initialize a model.
-    model: MLP = MLP(2, [16, 16, 1])  # 2-layer neural network
+    model: MLP = MLP(2, [16, 16, 1], "relu")  # 2-layer neural network
     print(model)
     print("Number of parameters: ", len(model.parameters()))
 

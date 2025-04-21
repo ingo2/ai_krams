@@ -15,20 +15,28 @@ class Module:
 
 class Neuron(Module):
 
-    def __init__(self, nin: int, nonlin: bool = True) -> None:
+    def __init__(self, nin: int, nonlin: str = "relu") -> None:
         self.w: List[Value] = [Value(random.uniform(-1, 1)) for _ in range(nin)]
         self.b: Value = Value(0)
-        self.nonlin: bool = nonlin
+        self.nonlin: str = nonlin
 
     def __call__(self, x: List[Value]) -> Value:
         act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
-        return act.relu() if self.nonlin else act
+        if self.nonlin == "relu":
+            return act.relu()
+        elif self.nonlin == "tanh":
+            return act.tanh()
+        elif self.nonlin == "linear":
+            return act
+        else:
+            raise ValueError(f"Unknown activation function: {self.nonlin}")
 
     def parameters(self) -> List[Value]:
         return self.w + [self.b]
 
     def __repr__(self) -> str:
-        return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+        act = "ReLU" if self.nonlin == "relu" else "Tanh" if self.nonlin == "tanh" else "Linear"
+        return f"{act}Neuron({len(self.w)})"
 
 
 class Layer(Module):
@@ -51,10 +59,11 @@ class Layer(Module):
 class MLP(Module):
     """Multi-layer perceptron."""
 
-    def __init__(self, nin: int, nouts: List[int]) -> None:
+    def __init__(self, nin: int, nouts: List[int], nonLin: str) -> None:
         sz = [nin] + nouts
         self.layers: List[Layer] = [
-            Layer(sz[i], sz[i + 1], nonlin=i != len(nouts) - 1) for i in range(len(nouts))
+            Layer(sz[i], sz[i + 1], nonlin=nonLin if (i != len(nouts) - 1) else "linear")
+            for i in range(len(nouts))
         ]
 
     def __call__(self, x: List[Value]) -> Union[Value, List[Value]]:

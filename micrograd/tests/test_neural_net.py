@@ -5,7 +5,6 @@ from neural_net import MLP
 import pytest
 
 
-# pytest -s
 def test_training_loop():
     random.seed(657)
 
@@ -21,7 +20,7 @@ def test_training_loop():
     # Desired targets.
     ys = [1.0, -1.0, -1.0, 1.0]
     # Initialze the MLP.
-    n = MLP(3, [4, 4, 1])
+    n = MLP(3, [4, 4, 1], nonLin="tanh")
 
     # Training loop.
     loss = Value(sys.float_info.max)
@@ -46,4 +45,4 @@ def test_training_loop():
         assert decr > 0.0
 
     # Regression check.
-    loss.data == pytest.approx(0.23246414201773874, rel=1e-6)
+    assert loss.data == pytest.approx(0.23246414201773874, rel=1e-6)
