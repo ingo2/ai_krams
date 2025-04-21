@@ -35,8 +35,15 @@ class Neuron(Module):
         return self.w + [self.b]
 
     def __repr__(self) -> str:
-        act = "ReLU" if self.nonlin == "relu" else "Tanh" if self.nonlin == "tanh" else "Linear"
-        return f"{act}Neuron({len(self.w)})"
+        act = "UnknownActivation"
+        if self.nonlin == "relu":
+            act = "ReLU"
+        elif self.nonlin == "tanh":
+            act = "Tanh"
+        elif self.nonlin == "linear":
+            act = "Linear"
+
+        return f"{act}-Neuron({len(self.w)})"
 
 
 class Layer(Module):

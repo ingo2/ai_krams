@@ -77,7 +77,7 @@ def main() -> None:
     Z = np.array([s.data > 0 for s in scores])
     Z = Z.reshape(xx.shape)
 
-    fig = plt.figure()
+    plt.figure()
     plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral, alpha=0.8)
     plt.scatter(X[:, 0], X[:, 1], c=y, s=40, cmap=plt.cm.Spectral)
     plt.xlim(xx.min(), xx.max())
