@@ -144,6 +144,35 @@ class PointCloudifier:
         self.points = list(zip(xs, ys, snapped_vals))
         return self.points
 
+    def drop_random(
+        self, fraction: float = 0.1, *, seed: Optional[int] = None
+    ) -> List[Tuple[float, float, float]]:
+        """Remove a fraction of points uniformly at random.
+
+        The parameter *fraction* specifies the portion of points to discard.
+        For example, a value of 0.2 removes twenty percent of the points.
+        Setting *seed* makes the operation reproducible. The method returns
+        the updated point list.
+        """
+        if not self.points:
+            raise RuntimeError("No point cloud available. Generate or load one first.")
+        if not 0.0 <= fraction <= 1.0:
+            raise ValueError("fraction must be between 0.0 and 1.0")
+        if fraction == 0.0:
+            return self.points
+        if fraction == 1.0:
+            self.points = []
+            return self.points
+
+        rng = np.random.default_rng(seed)
+        n_total = len(self.points)
+        n_remove = int(np.floor(n_total * fraction))
+        indices_to_remove = rng.choice(n_total, size=n_remove, replace=False)
+        mask = np.ones(n_total, dtype=bool)
+        mask[indices_to_remove] = False
+        self.points = [pt for keep, pt in zip(mask, self.points) if keep]
+        return self.points
+
     def save_json(self, filepath: str | Path, *, indent: int = 2) -> None:
         """Save the current point cloud to *filepath* as JSON."""
         if not self.points:
