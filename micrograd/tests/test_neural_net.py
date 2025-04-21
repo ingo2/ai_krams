@@ -4,12 +4,20 @@ from engine import Value
 from neural_net import MLP
 import pytest
 
+
 # pytest -s
 def test_training_loop():
     random.seed(657)
 
     # Possible inputs.
-    xs = [[2.0, 3.0, -1.0], [3.0, -1.0, 0.5], [0.5, 1.0, 1.0], [1.0, 1.0, -1.0]]
+    # fmt: off
+    xs = [
+        [2.0, 3.0, -1.0], 
+        [3.0, -1.0, 0.5], 
+        [0.5, 1.0, 1.0], 
+        [1.0, 1.0, -1.0]
+    ]
+    # fmt: on
     # Desired targets.
     ys = [1.0, -1.0, -1.0, 1.0]
     # Initialze the MLP.

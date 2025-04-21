@@ -1,0 +1,3 @@
+sudo apt-get install pytest matplotlib python3.13-tk
+sudo update-alternatives --config python
+sudo update-alternatives --config python3
