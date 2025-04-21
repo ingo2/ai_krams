@@ -1,5 +1,6 @@
+import math
 from pathlib import Path
-from pointcloudifier import PointCloudifier
+from pointcloudifier import PointCloudifier, quantised_values_rounded, quantised_values_exact
 
 
 def main() -> None:
@@ -8,8 +9,8 @@ def main() -> None:
 
     pc = PointCloudifier()
     pc.cloudify_image(img_path, sample_rate=3, weights=(0.299, 0.587, 0.114))
-    pc.save_json("miezekatze_cloud.json")
-    pc.plot(point_size=1.0, title="Miezekatze point cloud")
+    pc.quantise_values(quantised_values_exact(-1.0, 1.0, 5))
+    pc.plot(point_size=1.0, title="Miezekatze Point Cloud")
 
 
 if __name__ == "__main__":
