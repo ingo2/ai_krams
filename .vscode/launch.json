@@ -21,6 +21,15 @@
       "console": "integratedTerminal",
       "python": "/usr/bin/python3.13",
       "justMyCode": true,
-    }
+    },
+    {
+      "name": "debug pointcloudifier",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/pointcloudifier/main.py",
+      "console": "integratedTerminal",
+      "python": "/usr/bin/python3.13",
+      "justMyCode": true,
+    },
   ]
 }
