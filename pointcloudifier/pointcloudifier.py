@@ -150,6 +150,22 @@ class PointCloudifier:
         self.dv = float(diffs.min()) if diffs.size > 0 else None
         return self.points
 
+    def drop_below(self, threshold: float) -> List[Tuple[float, float, float]]:
+        """Remove all points with a value below *threshold*."""
+        if not self.points:
+            raise RuntimeError("No point cloud available. Generate or load one first.")
+
+        self.points = [pt for pt in self.points if pt[2] >= threshold]
+        return self.points
+
+    def drop_above(self, threshold: float) -> List[Tuple[float, float, float]]:
+        """Remove all points with a value above *threshold*."""
+        if not self.points:
+            raise RuntimeError("No point cloud available. Generate or load one first.")
+
+        self.points = [pt for pt in self.points if pt[2] <= threshold]
+        return self.points
+
     def drop_random(
         self, fraction: float = 0.1, *, seed: Optional[int] = None
     ) -> List[Tuple[float, float, float]]:
