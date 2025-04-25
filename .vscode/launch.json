@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/micrograd/main.py",
       "console": "integratedTerminal",
-      "python": "/usr/bin/python3.13",
+      "python": "/usr/bin/python3",
       "justMyCode": true,
     },
     {
@@ -19,7 +19,7 @@
         "micrograd/tests"
       ],
       "console": "integratedTerminal",
-      "python": "/usr/bin/python3.13",
+      "python": "/usr/bin/python3",
       "justMyCode": true,
     },
     {
@@ -28,7 +28,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/pointcloudifier/main.py",
       "console": "integratedTerminal",
-      "python": "/usr/bin/python3.13",
+      "python": "/usr/bin/python3",
       "justMyCode": true,
     },
   ]
